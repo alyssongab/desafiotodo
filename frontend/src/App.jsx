@@ -2,6 +2,7 @@ import './App.css';
 import './index.css';
 import Header from './components/Header';
 import Tarefa from './components/Tarefa';
+import Tabela from './components/Tabela';
 
 function App() {
 
@@ -9,9 +10,10 @@ function App() {
     <div className='m-auto'>
       <Header/>
 
-      <div className='flex justify-center items-center'>
-        <Tarefa/>
-      </div>
+        <div className='flex flex-col justify-center items-center'>
+          <Tarefa/>
+          <Tabela/>
+        </div>
 
     </div>
   )

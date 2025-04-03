@@ -1,7 +1,7 @@
 const Tarefa = () => {
 
     return(
-        <div className="w-full lg:w-[50%] p-3">
+        <div className="w-full p-3">
             <form action="" className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-7">
                 <div className="sm:w-[50vw] xl:w-[30vw] ">
                     <input type="text" name="tarefa" id="tarefa" placeholder="Adicionar uma nova tarefa"
