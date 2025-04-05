@@ -8,7 +8,7 @@ const app = express();
 // habilitar o cors para o frontend
 
 app.use(cors({
-    origin: 'http://localhost:5176'
+    origin: 'http://localhost:5173'
 }));
 
 app.use(express.json());
