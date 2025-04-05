@@ -1,10 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import tarefas from '../data.js'
 import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
 import { ChevronDown } from 'lucide-react';
 
 const Tabela = ({titulo, descricao, status, dataCriacao}) => {
+
+    const[tarefas, setTarefas] = useState([]);
+
+    useEffect(() => {
+        fetchTarefas();
+    }, []) // array vazio pra renderizar na montagem do componente
+
+    // para buscar as tarefas no backend
+    const fetchTarefas = async () => {
+        try{
+            const response = await fetch('http://localhost:3000/tarefas');
+            const data = await response.json();
+            setTarefas(data);
+        }
+        catch(error){
+            console.error('Erro ao buscar tarefas: ', error);
+        }
+    }
+
+    const deleteTarefa = async (id) => {
+        try{
+            await fetch(`http://localhost:3000/tarefas/${id}`,{
+                method: 'DELETE'
+            });
+
+            fetchTarefas();
+        }
+        catch(error){
+            console.error('Erro ao deletar tarefa: ', error);
+        }
+    }
 
     const listaTarefas = tarefas.map(tarefa => {
     
@@ -16,15 +47,15 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
                 </div>
 
                 <div className="flex gap-3 pr-3">
-                    <Trash2 className="cursor-pointer hover:scale-105"/>
+                    <Trash2
+                     className="cursor-pointer hover:scale-105"
+                     onClick={() => deleteTarefa(tarefa.id)}/>
                     <Pencil className="cursor-pointer hover:scale-105"/>
                 </div>
 
             </div>
         );
     });
-
-    const [useText, setUseText] = useState(false);
 
     return(
         <>
