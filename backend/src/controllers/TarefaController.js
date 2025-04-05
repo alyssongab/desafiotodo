@@ -23,3 +23,18 @@ export const criaTarefa = async (req, res) => {
 }
 
 // endpoint get (one) tarefa
+export const listarTarefaId = async (req, res) => {
+    try{
+        const tarefa = await Tarefa.findByPk(req.params.id);
+
+        if(tarefa){
+            res.status(200).json(tarefa);
+        }
+        else{
+            res.status(404).json({error: "Não existe uma tarefa com o ID informado."})
+        }
+    }
+    catch(error){
+        res.status(500).json({error: "Erro ao listar tarefa"});
+    }
+}
