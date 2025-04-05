@@ -14,6 +14,13 @@ export const listarTarefas = async (req, res) => {
 // endpoint post tarefa
 export const criaTarefa = async (req, res) => {
     try{
+
+        // verifica os campos obrigatorios
+        const { titulo, stats } = req.body;
+        if(!titulo || !stats){
+            return res.status(400).json({ error: "Campos obrigatórios não preenchidos!" });
+        }
+
         const novaTarefa = await Tarefa.create(req.body);
         res.status(201).json(novaTarefa);
     }
@@ -60,5 +67,22 @@ export const atualizarTarefa = async (req, res) => {
     }
     catch(error){
         res.status(500).json({ error: "Erro ao atualizar tarefa" });
+    }
+}
+
+// endpoint delete (por id) tarefa
+export const deletarTarefa = async (req, res) => {
+    try{
+        const tarefa = await Tarefa.findByPk(req.params.id);
+
+        if(!tarefa){
+            return res.status(404).json({ error: "Não existe uma tarefa com o ID informado." });
+        }
+
+        tarefa.destroy(req.params.id);
+        res.status(200).json({ success: "Tarefa deletada com sucesso" });
+    }
+    catch(error){
+        res.status(500).json({error: "Erro ao deletar tarefa"});
     }
 }

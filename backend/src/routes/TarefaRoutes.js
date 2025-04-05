@@ -3,7 +3,8 @@ import {
     listarTarefas,
     criaTarefa,
     listarTarefaId,
-    atualizarTarefa
+    atualizarTarefa,
+    deletarTarefa
 } from '../controllers/TarefaController.js';
 
 const router = express.Router();
@@ -21,5 +22,8 @@ router.get('/:id', listarTarefaId);
 
 // atualiza uma tarefa (pelo id)
 router.put('/:id', atualizarTarefa);
+
+// deleta uma tarefa
+router.delete('/:id', deletarTarefa);
 
 export default router;
