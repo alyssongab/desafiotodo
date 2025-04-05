@@ -2,7 +2,8 @@ import express from 'express';
 import {
     listarTarefas,
     criaTarefa,
-    listarTarefaId
+    listarTarefaId,
+    atualizarTarefa
 } from '../controllers/TarefaController.js';
 
 const router = express.Router();
@@ -17,5 +18,8 @@ router.post('/', criaTarefa);
 
 // lista uma tarefa (pelo id)
 router.get('/:id', listarTarefaId);
+
+// atualiza uma tarefa (pelo id)
+router.put('/:id', atualizarTarefa);
 
 export default router;

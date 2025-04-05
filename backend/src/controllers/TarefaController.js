@@ -31,10 +31,34 @@ export const listarTarefaId = async (req, res) => {
             res.status(200).json(tarefa);
         }
         else{
-            res.status(404).json({error: "Não existe uma tarefa com o ID informado."})
+            return res.status(404).json({error: "Não existe uma tarefa com o ID informado."});
         }
     }
     catch(error){
         res.status(500).json({error: "Erro ao listar tarefa"});
+    }
+}
+
+// endpoint put (por id) tarefa
+export const atualizarTarefa = async (req, res) => {
+    try{
+        const tarefa = await Tarefa.findByPk(req.params.id);
+
+        if (!tarefa) {
+            return res.status(404).json({ error: "Não existe uma tarefa com o ID informado." });
+        }
+
+        // verifica os campos obrigatorios
+        const { titulo, stats } = req.body;
+        if(!titulo || !stats){
+            return res.status(400).json({ error: "Campos obrigatórios não preenchidos!" });
+        }
+
+        await tarefa.update(req.body);
+        res.status(200).json(tarefa);
+        
+    }
+    catch(error){
+        res.status(500).json({ error: "Erro ao atualizar tarefa" });
     }
 }
