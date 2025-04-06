@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
 import { ChevronDown } from 'lucide-react';
 
-const Tabela = ({titulo, descricao, status, dataCriacao}) => {
+const Tabela = () => {
 
     const [tarefas, setTarefas] = useState([]);
     const [tarefaExpandidaId, setTarefaExpandidaId] = useState(null);

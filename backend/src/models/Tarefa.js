@@ -15,6 +15,7 @@ Tarefa.init(
         },
         stats: {
             type: DataTypes.ENUM({
+                defaultValue: 'PENDENTE',
                 values: ["PENDENTE", "EM_ANDAMENTO", "CONCLUIDA"]
             })
         },

@@ -62,16 +62,6 @@ const Tarefa = () => {
                     value={novaTarefa.descricao}
                     onChange={handleChange}
                 />
-                <select
-                    name="status"
-                    value={novaTarefa.stats}
-                    onChange={handleChange}
-                    className="w-full p-2 bg-slate-300 rounded-2xl"
-                >
-                    <option value="PENDENTE">Pendente</option>
-                    <option value="EM_ANDAMENTO">Em Andamento</option>
-                    <option value="CONCLUIDA">Concluída</option>
-                </select>
                 <button
                     type="submit"
                     className="bg-[#6C63FF] p-2 rounded-3xl text-white cursor-pointer hover:scale-105"
