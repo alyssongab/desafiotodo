@@ -58,8 +58,3 @@ npm run dev
 ```
 http://localhost:5173
 ```
-## 📁 Estrutura do Projeto
-📦 projeto/
-├── backend/           # API com Node.js + Express + SQLITE
-├── frontend/          # Interface com React + Tailwind
-└── README.md          # Documentação principal
