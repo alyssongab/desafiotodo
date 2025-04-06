@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import tarefas from '../data.js'
 import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
 import { ChevronDown } from 'lucide-react';
@@ -7,6 +6,8 @@ import { ChevronDown } from 'lucide-react';
 const Tabela = ({titulo, descricao, status, dataCriacao}) => {
 
     const[tarefas, setTarefas] = useState([]);
+
+    const[update, setUpdate] = useState(false);
 
     useEffect(() => {
         fetchTarefas();
@@ -24,11 +25,36 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
         }
     }
 
+
+    // requisicao para atualizar tarefa
+    const updateTarefa = async (id, tarefaAtualizada) => {
+        try{
+            const response = fetch(`http://localhost/tarefas/${id}`, {
+                method: 'PUT',
+                headers:{
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(tarefaAtualizada)
+            });
+
+            (response.ok) ? fetchTarefas() : console.error('Erro ao atualizar:', response.status);
+        }
+        catch(error){
+            console.error('Erro ao atualizar tarefa: ', error);
+        }
+    }
+
+    // requisicao para deletar tarefa
     const deleteTarefa = async (id) => {
         try{
-            await fetch(`http://localhost:3000/tarefas/${id}`,{
-                method: 'DELETE'
+            const response = await fetch(`http://localhost:3000/tarefas/${id}`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-Type' : 'application/json'
+                }
             });
+
+            (response.ok) ? fetchTarefas() : console.error('Erro ao deletar tarefa:', response.status);
 
             fetchTarefas();
         }
@@ -40,18 +66,30 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
     const listaTarefas = tarefas.map(tarefa => {
     
         return(
-            <div id={tarefa.id} className="flex items-center justify-between">
-                <div className="flex">
-                    <input type="checkbox" className="w-5"/>
-                    <p className="text-xl p-3 flex items-center">{tarefa.titulo}<ChevronDown/></p>
+            <div id={tarefa.id} className="grid grid-cols-3 items-center grid-">
+                <div className="flex justify-start">
+                    <p className="text-xl p-3 flex items-center">{tarefa.titulo}<ChevronDown className="pl-1 pt-1 w-6 cursor-pointer"/></p>
                 </div>
 
-                <div className="flex gap-3 pr-3">
+                <div className="flex justify-center">
+                    <select name="status" id="status" className="text-center bg-white p-1">
+                            <option value="pendente" selected>Pendente</option>
+                            <option value="andamento">Em Andamento</option>
+                            <option value="concluida">Concluída</option>
+                    </select>
+                </div>
+
+                <div className="flex justify-end gap-2 pr-3">
                     <Trash2
                      className="cursor-pointer hover:scale-105"
                      onClick={() => deleteTarefa(tarefa.id)}/>
-                    <Pencil className="cursor-pointer hover:scale-105"/>
+
+                    <Pencil 
+                    className="cursor-pointer hover:scale-105"
+                    onClick={() => {}}/>
+                    {/* ()) => updateTarefa(tarefa.id, tarefa) */}
                 </div>
+
 
             </div>
         );
