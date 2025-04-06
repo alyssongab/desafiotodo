@@ -131,7 +131,7 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
                                     readOnly
                                     className="p-2 border rounded bg-gray-200"
                                 />
-                                <button className="mt-2 bg-[#6C63FF]] text-white p-2 rounded cursor-pointer hover:scale-105">
+                                <button className="mt-2 bg-[#6C63FF] text-white p-2 rounded cursor-pointer hover:scale-105">
                                     Salvar alterações
                                 </button>
                             </>
