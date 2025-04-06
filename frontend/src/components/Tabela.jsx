@@ -8,7 +8,11 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
     const [tarefas, setTarefas] = useState([]);
     const [tarefaExpandidaId, setTarefaExpandidaId] = useState(null);
     const [modoEdicao, setModoEdicao] = useState(false);
-    
+    const [tarefaEmEdicao, setTarefaEmEdicao] = useState({
+        titulo: '',
+        descricao: '',
+        stats: ''
+    });
 
     const toggleDetalhes = (id) => {
         if (tarefaExpandidaId === id) {
@@ -20,9 +24,23 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
     };
     
     const editarTarefa = (id) => {
+        const tarefaSelecionada = tarefas.find(t => t.id === id);
         setTarefaExpandidaId(id);
-        setModoEdicao(true); 
+        setModoEdicao(true);
+        setTarefaEmEdicao({
+            titulo: tarefaSelecionada.titulo,
+            descricao: tarefaSelecionada.descricao,
+            stats: tarefaSelecionada.stats
+        });
     };
+
+    // pra mostrar no status (nao editavel)
+    const statusAmigavel = {
+        PENDENTE: "Pendente",
+        EM_ANDAMENTO: "Em Andamento",
+        CONCLUIDA: "Concluída"
+    };
+    
 
     useEffect(() => {
         fetchTarefas();
@@ -43,21 +61,27 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
 
     // requisicao para atualizar tarefa
     const updateTarefa = async (id, tarefaAtualizada) => {
-        try{
-            const response = fetch(`http://localhost/tarefas/${id}`, {
+        try {
+            const response = await fetch(`http://localhost:3000/tarefas/${id}`, {
                 method: 'PUT',
-                headers:{
-                    'Content-Type' : 'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(tarefaAtualizada)
             });
-
-            (response.ok) ? fetchTarefas() : console.error('Erro ao atualizar:', response.status);
-        }
-        catch(error){
+    
+            if (response.ok) {
+                fetchTarefas();
+                setTarefaExpandidaId(null);
+            } else {
+                alert(response.error || "Campos obrigatórios não preenchidos");
+                console.error('Erro ao atualizar:', response.status);
+            }
+        } catch (error) {
             console.error('Erro ao atualizar tarefa: ', error);
         }
     }
+    
 
     // requisicao para deletar tarefa
     const deleteTarefa = async (id) => {
@@ -83,7 +107,7 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
     
         return (
             <div key={tarefa.id} className="grid grid-cols-1 border-b border-gray-300">
-                <div className="grid grid-cols-3 items-center">
+                <div className="grid grid-cols-2 items-center">
                     <div className="flex justify-start">
                         <p className="text-xl p-3 flex items-center">
                             {tarefa.titulo}
@@ -92,14 +116,6 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
                                 onClick={() => toggleDetalhes(tarefa.id)}
                             />
                         </p>
-                    </div>
-    
-                    <div className="flex justify-center">
-                        <select name="status" id="status" className="text-center bg-white p-1">
-                            <option value="PENDENTE">Pendente</option>
-                            <option value="EM_ANDAMENTO">Em Andamento</option>
-                            <option value="CONCLUIDA">Concluída</option>
-                        </select>
                     </div>
     
                     <div className="flex justify-end gap-2 pr-3">
@@ -119,11 +135,31 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
                     <div className="p-3 bg-gray-100 flex flex-col gap-2">
                         {modoEdicao ? (
                             <>
+                                <label className="text-sm">Título</label>
+                                <input
+                                    type="text"
+                                    className="p-2 border rounded"
+                                    value={tarefaEmEdicao.titulo}
+                                    onChange={(e) => setTarefaEmEdicao({ ...tarefaEmEdicao, titulo: e.target.value.trim() })}
+                                    required
+                                />
                                 <label className="text-sm">Descrição</label>
                                 <textarea
                                     className="p-2 border rounded"
-                                    defaultValue={tarefa.descricao}
+                                    value={tarefaEmEdicao.descricao}
+                                    onChange={(e) => setTarefaEmEdicao({ ...tarefaEmEdicao, descricao: e.target.value })}
                                 />
+                                <label className="text-sm">Status</label>
+                                <select
+                                    className="p-2 border rounded"
+                                    value={tarefaEmEdicao.stats}
+                                    onChange={(e) => setTarefaEmEdicao({ ...tarefaEmEdicao, stats: e.target.value })}
+                                >
+                                    <option value="PENDENTE">Pendente</option>
+                                    <option value="EM_ANDAMENTO">Em Andamento</option>
+                                    <option value="CONCLUIDA">Concluída</option>
+                                </select>
+
                                 <label className="text-sm">Data de criação</label>
                                 <input
                                     type="text"
@@ -131,14 +167,15 @@ const Tabela = ({titulo, descricao, status, dataCriacao}) => {
                                     readOnly
                                     className="p-2 border rounded bg-gray-200"
                                 />
-                                <button className="mt-2 bg-[#6C63FF] text-white p-2 rounded cursor-pointer hover:scale-105">
+                                <button type="button" onClick={() => updateTarefa(tarefa.id, tarefaEmEdicao)} className="mt-2 bg-[#6C63FF] text-white p-2 rounded cursor-pointer hover:scale-105">
                                     Salvar alterações
                                 </button>
                             </>
                         ) : (
                             <>
                                 <p><strong>Descrição:</strong> {tarefa.descricao}</p>
-                                <p><strong>Criada em:</strong> {new Date(tarefa.dt_criacao).toLocaleString()}</p> // data e hora atual
+                                <p><strong>Status:</strong> {statusAmigavel[tarefa.stats]}</p>
+                                <p><strong>Criada em:</strong> {new Date(tarefa.dt_criacao).toLocaleString()}</p> {/* data e hora atual */}
                             </>
                         )}
                     </div>
