@@ -49,7 +49,8 @@ npm run dev
 ``` 
 ### 3. Instalar dependências e iniciar servidor frontend (React)
 ```bash
-cd ../frontend/
+# Em um novo terminal
+cd frontend/
 npm install
 npm run dev
 ```
